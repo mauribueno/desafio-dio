@@ -1,25 +1,35 @@
 package br.com.dio.desafio.dominio;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class Bootcamp {
+
     private String nome;
     private String descricao;
-    private final LocalDate dataInicial = LocalDate.now();
-    private final LocalDate dataFinal = dataInicial.plusDays(45);
-    private Set<Dev> devsInscritos = new HashSet<>();
-    private Set<Conteudo> conteudos = new LinkedHashSet<>();
+    private final LocalDate dataInicial;
+    private final LocalDate dataFinal;
 
+    private final Set<Dev> devsInscritos = new HashSet<>();
+    private final Set<Conteudo> conteudos = new LinkedHashSet<>();
+
+    public Bootcamp() {
+        this.dataInicial = LocalDate.now();
+        this.dataFinal = this.dataInicial.plusDays(45);
+    }
 
     public String getNome() {
         return nome;
     }
 
     public void setNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome do bootcamp é obrigatório");
+        }
         this.nome = nome;
     }
 
@@ -28,6 +38,9 @@ public class Bootcamp {
     }
 
     public void setDescricao(String descricao) {
+        if (descricao == null || descricao.isBlank()) {
+            throw new IllegalArgumentException("Descrição do bootcamp é obrigatória");
+        }
         this.descricao = descricao;
     }
 
@@ -40,31 +53,43 @@ public class Bootcamp {
     }
 
     public Set<Dev> getDevsInscritos() {
-        return devsInscritos;
-    }
-
-    public void setDevsInscritos(Set<Dev> devsInscritos) {
-        this.devsInscritos = devsInscritos;
+        return Collections.unmodifiableSet(devsInscritos);
     }
 
     public Set<Conteudo> getConteudos() {
-        return conteudos;
+        return Collections.unmodifiableSet(conteudos);
     }
 
-    public void setConteudos(Set<Conteudo> conteudos) {
-        this.conteudos = conteudos;
+    public void inscreverDev(Dev dev) {
+        if (dev == null) {
+            throw new IllegalArgumentException("Dev não pode ser nulo");
+        }
+
+        devsInscritos.add(dev);
+        dev.inscreverConteudos(this.conteudos);
+    }
+
+    public void adicionarConteudo(Conteudo conteudo) {
+        if (conteudo == null) {
+            throw new IllegalArgumentException("Conteúdo não pode ser nulo");
+        }
+        conteudos.add(conteudo);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+
+        if (!(o instanceof Bootcamp))
+            return false;
+
         Bootcamp bootcamp = (Bootcamp) o;
-        return Objects.equals(nome, bootcamp.nome) && Objects.equals(descricao, bootcamp.descricao) && Objects.equals(dataInicial, bootcamp.dataInicial) && Objects.equals(dataFinal, bootcamp.dataFinal) && Objects.equals(devsInscritos, bootcamp.devsInscritos) && Objects.equals(conteudos, bootcamp.conteudos);
+        return Objects.equals(nome, bootcamp.nome);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nome, descricao, dataInicial, dataFinal, devsInscritos, conteudos);
+        return Objects.hash(nome);
     }
 }
