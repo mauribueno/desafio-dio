@@ -2,7 +2,7 @@ package br.com.dio.desafio.dominio;
 
 public class Curso extends Conteudo {
 
-    private int cargaHoraria;
+    private double cargaHoraria;
 
     @Override
     public double calcularXp() {
@@ -12,11 +12,11 @@ public class Curso extends Conteudo {
     public Curso() {
     }
 
-    public int getCargaHoraria() {
+    public double getCargaHoraria() {
         return cargaHoraria;
     }
 
-    public void setCargaHoraria(int cargaHoraria) {
+    public void setCargaHoraria(double cargaHoraria) {
         if (cargaHoraria <= 0) {
             throw new IllegalArgumentException("Carga horária deve ser maior que zero");
         }
